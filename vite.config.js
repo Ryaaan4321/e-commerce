@@ -5,3 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
 })
+// to clone the github repository 
+// git clone --single-branch -b branchname https link of the repository
