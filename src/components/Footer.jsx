@@ -64,7 +64,9 @@ const Right = styled.div`
   display:flex;
   align-items:center;
    `;
-  const Payment=styled.img``;
+  const Payment=styled.img`
+  width:50%
+  `;
 
 
 const Footer = () => {
@@ -115,7 +117,8 @@ const Footer = () => {
         <ContactItem> <Phone style={{marginRight:"10px"}}/>+1 435 89 76</ContactItem>
         <ContactItem> <Email style={{marginRight:"10px"}}/>contact@rn.dev</ContactItem>
       </Right>
-      <Payment src="https://i.ibb.co/Qfvn4z6/payment.png"/>
+      <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" alt="payment wali image"/>
+      {/* https://i.ibb.co/Qfvn4z6/payment.png payment wali image; */}
     </Container>
   );
 };
