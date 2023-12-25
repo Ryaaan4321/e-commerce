@@ -42,11 +42,34 @@ const Products = ({ cat, filters, sort }) => {
       );
   }, [cat, filters]);
 
+  useEffect(()=>{
+    if(sort="newest"){
+      setFilterdProducts(prev=>
+        [...prev].sort((a,b)=>a.createdAt-b.createdAt)
+        );
+    }
+    else if((sort=="asc")){
+      setFilterdProducts((prev)=>
+      [...prev].sort((a,b)=>a.price-b.price)
+      );
+    }
+    else {
+      setFilterdProducts((prev)=>
+      [...prev].sort((a,b)=>b.price-a.price)
+      );
+    }
+  },[sort]);
+
   return (
     <Container>
-      {filterdProducts.map((item) => (
+      {cat ? filterdProducts.map((item) => (
         <Product item={item} key={item.id} />
-      ))}
+      )): products
+      .slice(0,8)
+      .map((item)=>(
+        <Product item={item} key={item.id}/>
+      )) 
+      }
     </Container>
   );
 };

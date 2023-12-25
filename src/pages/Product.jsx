@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Announcement from "../components/Announcement.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import Newsletter from "../components/Newsletter.jsx";
 import styled from "styled-components";
 import { Add, Remove  } from "@material-ui/icons";
-// import { Filter } from "@material-ui/icons";
+import { useLocation } from "react-router";
+import { publicRequest } from "../requestMethod.js";
+import { addProduct } from "../redux/cartRedux.js";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div``;
 
@@ -115,6 +118,44 @@ const Button = styled.button`
 
 
 const Product = (cat , filters, sort) => {
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
+  const [quantity, setQuantity]=useState(1);
+  const [product , setProduct]=useState({});
+  const[color,setColor]=useState("");
+  const[size, setSize]=useState("");
+  const dispatch = useDispatch();
+
+
+  useEffect(()=>{
+    const getProduct = async()=>{
+      try{
+        const res  =await  publicRequest.get("/products/find/" + id)
+        setProduct(res.data);
+
+
+      }catch(err){
+
+      }
+
+    }
+    getProduct();
+
+  },[id]);
+  const handleQuantity = (type)=>{
+    if(type==="dec"){
+     quantity > 1 &&  setQuantity(quantity-1);
+    }else if(type==="inc")
+    setQuantity(quantity+1);
+
+  }
+  const handleClick = ()=>{
+    dispatch( addProduct({...product , quantity , color, size })
+    );
+   
+   
+     
+  }
   
   return (
     <Container>
@@ -123,46 +164,48 @@ const Product = (cat , filters, sort) => {
       <Navbar />
       <Wrapper>
         <ImageContainer>
-          <Image src="https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" />
+          <Image src={product.img}/>
         </ImageContainer>
         <InfoContainer>
-          <Title> Denim jumpsuit</Title>
+          <Title>{product.title}</Title>
           <Desc>
             {" "}
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi
             reprehenderit ratione optio suscipit velit, sequi cupiditate
             veritatis quasi hic culpa.
           </Desc>
-          <Price>30$</Price>
+          <Price>${product.price}</Price>
 
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+            { product.color?.map((c)=>(
+              <FilterColor color={c} key={c} onClick={()=>setColor(c)}/>
+            ))}
             </Filter>
 
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize>
+              <FilterSize onChange={(e)=>setSize(e.target.value)}>
+                {product.size?.map((s)=>(
+                  <FilterSizeOption key={s}>
+                    {s}
+
+                  </FilterSizeOption>
+                ))}
                 <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
-                <FilterSizeOption>XXL</FilterSizeOption>
+                
               </FilterSize>
             </Filter>
           </FilterContainer>
 
           <AddContainer>
             <AmountContainer>
-              <Remove/>
-              <Amount>1</Amount>
-              <Add/>
+              <Remove onClick={()=>handleQuantity("dec")}/>
+              <Amount>{quantity}</Amount>
+              <Add  onClick={()=>handleQuantity("inc")}/>
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={handleClick }>ADD TO CART</Button>
 
           </AddContainer>
         </InfoContainer>
