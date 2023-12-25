@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Announcement from "../components/Announcement.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
@@ -114,7 +114,8 @@ const Button = styled.button`
 `;
 
 
-const Product = () => {
+const Product = (cat , filters, sort) => {
+  
   return (
     <Container>
       <Announcement />
